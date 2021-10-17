@@ -15,15 +15,7 @@ export class AppService {
     private readonly foodModel: FoodModel,
   ) {}
 
-  async getHello(): Promise<Ingredient> {
-    const ingr = await this.ingredientModel.findOne();
-    const dessertCat = await this.categoryModel.findOne({ name: 'dessert' });
-    const food = await this.foodModel.findOne();
-    food.ingredients.push({ _id: ingr._id, quantity: 3.2 });
-    await food.save();
-    dessertCat.foods.push(food);
-    await dessertCat.save();
-
-    return this.ingredientModel.findOne();
+  public getHello(): string {
+    return 'Hello World !';
   }
 }

@@ -35,5 +35,35 @@ type Category {
 }
 
 type Query {
-  hello: Ingredient!
+  hello: String!
+  getIngredients: [Ingredient!]!
+}
+
+type Mutation {
+  createIngredient(data: CreateIngredientData!): Ingredient!
+  editIngredient(data: EditIngredientData!): Ingredient!
+  deleteIngredient(_id: String!): Ingredient!
+}
+
+input CreateIngredientData {
+  name: String!
+  calories: Float!
+  proteins: Float!
+  carbohydrates: Float!
+  sugars: Float!
+  fats: Float!
+  saturated: Float!
+  salt: Float!
+}
+
+input EditIngredientData {
+  _id: ID!
+  name: String
+  calories: Float
+  proteins: Float
+  carbohydrates: Float
+  sugars: Float
+  fats: Float
+  saturated: Float
+  salt: Float
 }

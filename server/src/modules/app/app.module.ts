@@ -11,9 +11,17 @@ import { AppResolver } from './app.resolver';
 import { Ingredient, IngredientSchema } from 'src/models/Ingredient';
 import { Category, CategorySchema } from 'src/models/Category';
 import { Food, FoodSchema } from 'src/models/Food';
+import { IngredientsModule } from '../ingredient/ingredient.module';
+import { FoodModule } from '../food/food.module';
+import { CategoryModule } from '../category/category.module';
+import { RecipeModule } from '../recipe/recipe.module';
 
 @Module({
   imports: [
+    IngredientsModule,
+    FoodModule,
+    CategoryModule,
+    RecipeModule,
     MongooseModule.forFeature([
       { name: Ingredient.name, schema: IngredientSchema },
       { name: Category.name, schema: CategorySchema },
