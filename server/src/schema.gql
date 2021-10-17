@@ -1,0 +1,39 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Ingredient {
+  _id: ID!
+  name: String!
+  calories: Float!
+  proteins: Float!
+  carbohydrates: Float!
+  sugars: Float!
+  fats: Float!
+  saturated: Float!
+  salt: Float!
+  foods: [Food!]!
+  createdAt: Float!
+  updatedAt: Float
+}
+
+type Food {
+  _id: ID!
+  name: String!
+  category: Category!
+  ingredients: [Ingredient!]!
+  createdAt: Float!
+  updatedAt: Float
+}
+
+type Category {
+  _id: ID!
+  name: String!
+  foods: [Food!]!
+  createdAt: Float!
+  updatedAt: Float
+}
+
+type Query {
+  hello: Ingredient!
+}

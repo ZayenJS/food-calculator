@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  vue:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: fc-front
+    ports:
+      - 8009:8080
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    restart: unless-stopped
+    depends_on:
+      - nest
+
+  nest:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: fc-back
+    env_file: ./server/.env
+    ports:
+      - 8008:3000
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    restart: unless-stopped
