@@ -1,4 +1,8 @@
 <template>
+  <div>
+    <router-link to="/">Home</router-link>
+    <router-link to="/calculate">Calculate</router-link>
+  </div>
   <router-view />
 </template>
 

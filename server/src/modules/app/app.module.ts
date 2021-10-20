@@ -32,7 +32,7 @@ import { RecipeModule } from '../recipe/recipe.module';
       name: 'default',
       type: 'mongodb',
       url: process.env.MONGO_URI,
-      appname: 'the-tavern',
+      appname: 'food-calculator',
       synchronize: true,
       logging: true,
       entities,
@@ -41,7 +41,7 @@ import { RecipeModule } from '../recipe/recipe.module';
       autoSchemaFile: path.join(process.cwd(), 'src/schema.gql'),
       cors: {
         credentials: true,
-        origin: ['http://localhost:8009', 'https://studio.apollographql.com'],
+        origin: [process.env.CLIENT_URL, 'https://studio.apollographql.com'],
       },
       playground: true,
       context: ({ req, res }: Context) => ({ req, res }),

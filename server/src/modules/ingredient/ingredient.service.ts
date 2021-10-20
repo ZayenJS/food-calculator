@@ -39,6 +39,19 @@ export class IngredientService {
     }
   }
 
+  public async findIngredientsByName(value: string) {
+    try {
+      const regexp = new RegExp(`^${value}`, 'gi');
+      const ingredients = await this.ingredientModel
+        .find({ name: regexp })
+        .populate({ path: 'foods' });
+
+      return this.ingredientModel.populate(ingredients, { path: 'category' });
+    } catch (error) {
+      console.trace(error);
+    }
+  }
+
   public async createIngredient(data: CreateIngredientData) {
     try {
       return this.ingredientModel.create({

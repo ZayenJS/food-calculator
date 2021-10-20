@@ -13,6 +13,11 @@ export class IngredientResolver {
     return this.ingredientService.getIngredients();
   }
 
+  @Query(() => [Ingredient])
+  public async findIngredientsByName(@Args('name') name: string) {
+    return this.ingredientService.findIngredientsByName(name);
+  }
+
   @Mutation(() => Ingredient)
   public async createIngredient(@Args('data') data: CreateIngredientData) {
     return this.ingredientService.createIngredient(data);

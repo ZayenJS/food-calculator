@@ -1,4 +1,5 @@
 @import 'partials/reset';
+@import 'partials/variables';
 
 ::-webkit-scrollbar {
   width: 1rem;
@@ -20,4 +21,91 @@
 
 ::-webkit-scrollbar-track {
   background: rgb(107, 94, 151);
+}
+
+.table {
+  width: 100%;
+  max-width: 17rem + 8 * 10rem;
+  margin: auto;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &-caption {
+    position: sticky;
+    top: 0;
+
+    grid-column: 1 / 10;
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    background-color: rgb(58, 40, 80);
+  }
+
+  $first-col: 17rem;
+
+  &-content-container {
+    display: grid;
+    overflow: auto;
+    width: 100%;
+    max-height: 20rem;
+    grid-template-columns: 17rem repeat(8, 10rem);
+  }
+
+  &-header {
+    grid-column: 1/10;
+    position: sticky;
+    top: 0;
+
+    &-data {
+      font-weight: bold;
+      background-color: rgb(162, 141, 200);
+    }
+  }
+
+  &-row {
+    display: grid;
+    grid-template-columns: 17rem repeat(8, 10rem);
+  }
+
+  &-header-data,
+  &-body-data {
+    text-align: center;
+    padding: 1rem 0.25rem;
+    color: rgb(255, 255, 255);
+    font-size: 1.1rem;
+  }
+
+  &-body {
+    grid-column: 1/10;
+
+    .table-row {
+      &:nth-child(odd) {
+        .table-body-data {
+          background-color: rgb(148, 114, 192);
+        }
+      }
+
+      &:nth-child(even) {
+        .table-body-data {
+          background-color: rgb(162, 141, 200);
+        }
+      }
+    }
+  }
+
+  &-footer {
+    grid-column: 1 / 10;
+    font-size: 1.25rem;
+    font-weight: bold;
+    background-color: rgb(58, 40, 80);
+  }
+}
+
+.input-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
 }

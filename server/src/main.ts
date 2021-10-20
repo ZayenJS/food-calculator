@@ -27,10 +27,11 @@ async function bootstrap() {
       },
     ),
   );
+  console.log(process.env);
 
   app.use(
     session({
-      name: 'the-tavern-sid',
+      name: 'food-calculator-sid',
       cookie: {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365,

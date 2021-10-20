@@ -1,7 +1,14 @@
 <template>
   <div>
-    <label :for="id">{{ label }}</label>
-    <input :id="id" type="text" :value="value" @input="inputChange" />
+    <label v-if="label" :for="id">{{ label }}</label>
+    <input
+      autocomplete="off"
+      :id="id"
+      type="text"
+      :value="value"
+      @input="inputChange"
+      @blur="onBlur"
+    />
     <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
@@ -19,7 +26,10 @@
     },
     methods: {
       inputChange(event: any) {
-        this.$emit('inputChange', { name: this.name, value: event.target.value });
+        this.$emit('inputChange', { name: this.name, value: event.target.value, event });
+      },
+      onBlur() {
+        this.$emit('onBlur');
       },
     },
   })

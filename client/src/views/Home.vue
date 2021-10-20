@@ -39,7 +39,7 @@
 
 <script lang="ts">
   import { Options, Vue } from 'vue-class-component';
-  import axios from 'axios';
+  import axios from '@/util/axios';
   import AddIngredient from '@/components/AddIngredient.vue';
 
   @Options({
@@ -52,7 +52,7 @@
       try {
         const {
           data: { data },
-        }: any = await axios.post('http://localhost:8008/graphql', {
+        }: any = await axios.post('/graphql', {
           query: `
                 {
                   getIngredients {
@@ -84,20 +84,22 @@
 </script>
 
 <style lang="scss" scoped>
+  @import '@/assets/scss/partials/_variables.scss';
+
   ::-webkit-scrollbar {
     width: 1rem;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, rgb(88, 42, 141) 0%, rgb(0, 118, 122) 100%);
+    background: linear-gradient(135deg, $main-color 0%, $secondary-color 100%);
     border-radius: 20rem;
     transition: all 250ms ease;
 
     &:hover {
       background: linear-gradient(
         135deg,
-        lighten(rgb(88, 42, 141), 15%) 0%,
-        lighten(rgb(0, 118, 122), 15%) 100%
+        lighten($main-color, 15%) 0%,
+        lighten($secondary-color, 15%) 100%
       );
     }
   }
@@ -110,81 +112,5 @@
   .home {
     min-height: 100vh;
     padding: 2rem;
-  }
-
-  .table {
-    width: 100%;
-    max-width: 17rem + 8 * 10rem;
-    margin: auto;
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-
-    &-caption {
-      position: sticky;
-      top: 0;
-
-      grid-column: 1 / 10;
-      text-align: center;
-      padding: 1rem;
-      font-size: 1.25rem;
-      font-weight: bold;
-      background-color: rgb(58, 40, 80);
-    }
-
-    $first-col: 17rem;
-
-    &-content-container {
-      display: grid;
-      overflow: auto;
-      width: 100%;
-      max-height: 20rem;
-      grid-template-columns: 17rem repeat(8, 10rem);
-    }
-
-    &-header {
-      grid-column: 1/10;
-      position: sticky;
-      top: 0;
-
-      &-data {
-        font-weight: bold;
-        background-color: rgb(162, 141, 200);
-      }
-    }
-
-    &-row {
-      display: grid;
-      grid-template-columns: 17rem repeat(8, 10rem);
-    }
-
-    &-header-data,
-    &-body-data {
-      color: #222;
-      text-align: center;
-      padding: 1rem 0.25rem;
-      color: rgb(255, 255, 255);
-      font-size: 1.1rem;
-    }
-
-    &-body {
-      grid-column: 1/10;
-      .table-row {
-        &:nth-child(odd) {
-          .table-body-data {
-            background-color: rgb(148, 114, 192);
-          }
-        }
-
-        &:nth-child(even) {
-          .table-body-data {
-            background-color: rgb(162, 141, 200);
-          }
-        }
-      }
-    }
-  }
-
-  tbody tr {
   }
 </style>

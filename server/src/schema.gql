@@ -37,6 +37,7 @@ type Category {
 type Query {
   hello: String!
   getIngredients: [Ingredient!]!
+  findIngredientsByName(name: String!): [Ingredient!]!
 }
 
 type Mutation {
