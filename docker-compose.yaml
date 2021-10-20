@@ -26,3 +26,16 @@ services:
       - /app/node_modules
       - ./server:/app
     restart: unless-stopped
+#   mongo:
+#     image: mongo:3.6.23
+#     container_name: fc-db
+#     environment:
+#       MONGO_INITDB_ROOT_USERNAME:
+#       MONGO_INITDB_ROOT_PASSWORD:
+#     volumes:
+#       - fc-data:/data/db
+#     command: ['mongod', '--auth']
+#     restart: unless-stopped
+
+# volumes:
+#   fc-data:
