@@ -26,16 +26,26 @@ services:
       - /app/node_modules
       - ./server:/app
     restart: unless-stopped
-#   mongo:
-#     image: mongo:3.6.23
-#     container_name: fc-db
-#     environment:
-#       MONGO_INITDB_ROOT_USERNAME:
-#       MONGO_INITDB_ROOT_PASSWORD:
-#     volumes:
-#       - fc-data:/data/db
-#     command: ['mongod', '--auth']
-#     restart: unless-stopped
+    depends_on:
+      - pg
 
-# volumes:
-#   fc-data:
+  pg:
+    image: postgres
+    container_name: fc-db
+    environment:
+      POSTGRES_PASSWORD: food-calculator
+      POSTGRES_USER: food-calculator
+    volumes:
+      - fc-data:/var/liv/postgresql/data
+    restart: unless-stopped
+
+  typeorm:
+    build:
+      context: ./server
+      dockerfile: typeorm/Dockerfile
+    volumes:
+      - ./server:/app
+    entrypoint: ['typeorm']
+
+volumes:
+  fc-data:

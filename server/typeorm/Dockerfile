@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:14.16.1-alpine3.13
 
 WORKDIR /app
 
@@ -10,10 +10,10 @@ COPY . /app
 
 VOLUME [ "/app/node_modules" ]
 
+RUN npm i -g typeorm
+
 # RUN addgroup -g 1000 dave && useradd -g dave -s /bin/sh dave
 
 USER node
 
-EXPOSE 3000
-
-CMD ["npm", "run", "start:dev"]
+ENTRYPOINT [ "typeorm" ]

@@ -1,68 +1,77 @@
 import { Field, ObjectType, Float, ID } from '@nestjs/graphql';
-import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { ObjectID } from 'typeorm';
-import { Document, Model, Schema as MongooseSchema } from 'mongoose';
-import { Food } from './Food';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+import { Recipe } from './Recipe';
 
 @ObjectType()
-@Schema()
-export class Ingredient {
+@Entity({ name: 'ingredients' })
+export class Ingredient extends BaseEntity {
   @Field(() => ID)
-  public _id: ObjectID;
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  public id: number;
 
-  @Field(() => String)
-  @Prop({ type: String })
+  @Field(() => String, { nullable: false })
+  @Column({ type: 'varchar', length: 100, nullable: false })
   public name: string;
 
-  @Field(() => Float)
-  @Prop({ type: Number })
+  @Field(() => Float, { nullable: false })
+  @Column({ type: 'double precision', nullable: false })
   public calories: number;
 
-  @Field(() => Float)
-  @Prop({ type: Number })
+  @Field(() => Float, { nullable: false })
+  @Column({ type: 'double precision', nullable: false })
   public proteins: number;
 
-  @Field(() => Float)
-  @Prop({ type: Number })
+  @Field(() => Float, { nullable: false })
+  @Column({ type: 'double precision', nullable: false })
   public carbohydrates: number;
 
-  @Field(() => Float)
-  @Prop({ type: Number })
+  @Field(() => Float, { nullable: false })
+  @Column({ type: 'double precision', nullable: false })
   public sugars: number;
 
-  @Field(() => Float)
-  @Prop({ type: Number })
+  @Field(() => Float, { nullable: false })
+  @Column({ type: 'double precision', nullable: false })
   public fats: number;
 
-  @Field(() => Float)
-  @Prop({ type: Number })
+  @Field(() => Float, { nullable: false })
+  @Column({ type: 'double precision', nullable: false })
   public saturated: number;
 
-  @Field(() => Float)
-  @Prop({ type: Number })
+  @Field(() => Float, { nullable: false })
+  @Column({ type: 'double precision', nullable: false })
   public salt: number;
 
-  @Field(() => [Food])
-  @Prop({
-    type: [
-      {
-        _id: MongooseSchema.Types.ObjectId,
-      },
-    ],
-    ref: 'Food',
-  })
-  public foods: Food[];
-
   @Field(() => Number)
-  @Prop({ type: Number })
+  @CreateDateColumn({
+    type: 'timestamp with time zone',
+    name: 'created_at',
+  })
   public createdAt: number;
 
   @Field(() => Number, { nullable: true })
-  @Prop({ type: Number, nullable: true })
+  @UpdateDateColumn({
+    type: 'timestamp with time zone',
+    nullable: true,
+    name: 'updated_at',
+  })
   public updatedAt: number;
+
+  @Field(() => [Recipe])
+  @ManyToMany(() => Recipe, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @JoinTable({
+    name: 'recipe_details',
+    joinColumn: { name: 'ingredient_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'recipe_id', referencedColumnName: 'id' },
+  })
+  public recipes: Recipe[];
 }
-
-export type IngredientDocument = Ingredient & Document;
-export type IngredientModel = Model<IngredientDocument>;
-
-export const IngredientSchema = SchemaFactory.createForClass(Ingredient);

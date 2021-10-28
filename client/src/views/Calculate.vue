@@ -26,17 +26,19 @@
     <div class="table-caption">
       Ingrédients selectionnés
     </div>
-    <div class="table-header">
-      <div class="table-row">
-        <div class="table-header-data">Nom</div>
-        <div class="table-header-data">Calories</div>
-        <div class="table-header-data">Protéines</div>
-        <div class="table-header-data">Glucides</div>
-        <div class="table-header-data">dont sucres</div>
-        <div class="table-header-data">Lipides</div>
-        <div class="table-header-data">dont saturés</div>
-        <div class="table-header-data">sel</div>
-        <div class="table-header-data">Quantité (en grammes)</div>
+    <div class="table-content-container">
+      <div class="table-header">
+        <div class="table-row">
+          <div class="table-header-data">Nom</div>
+          <div class="table-header-data">Calories</div>
+          <div class="table-header-data">Protéines</div>
+          <div class="table-header-data">Glucides</div>
+          <div class="table-header-data">dont sucres</div>
+          <div class="table-header-data">Lipides</div>
+          <div class="table-header-data">dont saturés</div>
+          <div class="table-header-data">sel</div>
+          <div class="table-header-data">Quantité (en grammes)</div>
+        </div>
       </div>
       <div class="table-body">
         <div

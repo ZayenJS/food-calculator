@@ -1,5 +1,13 @@
 import { Category } from './Category';
-import { Food } from './Food';
 import { Ingredient } from './Ingredient';
+import { Recipe } from './Recipe';
+import { Instruction } from './Instruction';
+import { RecipeDetail } from './RecipeDetail';
 
-export const entities = [Category, Ingredient, Food];
+export const entities = [
+  Category,
+  Ingredient,
+  Recipe,
+  Instruction,
+  RecipeDetail,
+];

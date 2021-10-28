@@ -20,8 +20,8 @@
           </div>
         </div>
         <div class="table-body">
-          <div class="table-row" v-for="ingredient in ingredients" :key="ingredient._id">
-            <div class="table-body-data">{{ ingredient._id }}</div>
+          <div class="table-row" v-for="ingredient in ingredients" :key="ingredient.id">
+            <div class="table-body-data">{{ ingredient.id }}</div>
             <div class="table-body-data">{{ ingredient.name }}</div>
             <div class="table-body-data">{{ ingredient.calories }}</div>
             <div class="table-body-data">{{ ingredient.proteins }}</div>
@@ -56,7 +56,7 @@
           query: `
                 {
                   getIngredients {
-                    _id
+                    id
                     name
                     calories
                     proteins

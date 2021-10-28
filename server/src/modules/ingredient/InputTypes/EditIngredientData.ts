@@ -3,7 +3,7 @@ import { Field, Float, ID, InputType } from '@nestjs/graphql';
 @InputType()
 export class EditIngredientData {
   @Field(() => ID, { nullable: false })
-  public _id: string;
+  public id: number;
 
   @Field(() => String, { nullable: true })
   public name?: string;

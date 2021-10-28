@@ -144,7 +144,7 @@
               query: `
               mutation($CreateIngredientData: CreateIngredientData!) {
                 createIngredient(data: $CreateIngredientData) {
-                  _id
+                  id
                   name
                   calories
                   proteins

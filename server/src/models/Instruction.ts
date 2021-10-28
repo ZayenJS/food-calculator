@@ -1,23 +1,26 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Recipe } from './Recipe';
 
 @ObjectType()
-@Entity({ name: 'categories' })
-export class Category extends BaseEntity {
+@Entity({ name: 'instructions' })
+export class Instruction extends BaseEntity {
   @Field(() => ID, { nullable: false })
   @PrimaryGeneratedColumn({ type: 'bigint' })
   public id: number;
 
   @Field(() => String, { nullable: false })
-  @Column({ type: 'varchar', length: 100, nullable: false })
-  public name: string;
+  @Column({ type: 'text', nullable: false })
+  public content: string;
 
   @Field(() => Number)
   @CreateDateColumn({
@@ -33,4 +36,9 @@ export class Category extends BaseEntity {
     name: 'updated_at',
   })
   public updatedAt: number;
+
+  @Field(() => Recipe)
+  @JoinColumn({ name: 'recipe_id' })
+  @ManyToOne(() => Recipe)
+  public recipe: Recipe;
 }

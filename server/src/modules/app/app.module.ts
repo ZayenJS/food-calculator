@@ -1,39 +1,27 @@
 import * as path from 'path';
 import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { Context } from 'src/classes/Context';
 import { entities } from '../../models';
 import { AppResolver } from './app.resolver';
-import { Ingredient, IngredientSchema } from 'src/models/Ingredient';
-import { Category, CategorySchema } from 'src/models/Category';
-import { Food, FoodSchema } from 'src/models/Food';
 import { IngredientsModule } from '../ingredient/ingredient.module';
-import { FoodModule } from '../food/food.module';
 import { CategoryModule } from '../category/category.module';
 import { RecipeModule } from '../recipe/recipe.module';
 
 @Module({
   imports: [
     IngredientsModule,
-    FoodModule,
     CategoryModule,
     RecipeModule,
-    MongooseModule.forFeature([
-      { name: Ingredient.name, schema: IngredientSchema },
-      { name: Category.name, schema: CategorySchema },
-      { name: Food.name, schema: FoodSchema },
-    ]),
-    MongooseModule.forRoot(process.env.MONGO_URI),
     TypeOrmModule.forRoot({
-      name: 'default',
-      type: 'mongodb',
-      url: process.env.MONGO_URI,
-      appname: 'food-calculator',
-      synchronize: true,
+      type: 'postgres',
+      url: process.env.PG_URI,
+      applicationName: 'dish-calculator',
+      synchronize: false,
+      // dropSchema: true,
       logging: true,
       entities,
     }),

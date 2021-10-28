@@ -2,8 +2,33 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Category {
+  id: ID!
+  name: String!
+  createdAt: Float!
+  updatedAt: Float
+}
+
+type Instruction {
+  id: ID!
+  content: String!
+  createdAt: Float!
+  updatedAt: Float
+  recipe: Recipe!
+}
+
+type Recipe {
+  id: ID!
+  name: String!
+  createdAt: Float!
+  updatedAt: Float
+  ingredients: [Ingredient!]!
+  categories: [Category!]!
+  instructions: [Instruction!]!
+}
+
 type Ingredient {
-  _id: ID!
+  id: ID!
   name: String!
   calories: Float!
   proteins: Float!
@@ -12,26 +37,9 @@ type Ingredient {
   fats: Float!
   saturated: Float!
   salt: Float!
-  foods: [Food!]!
   createdAt: Float!
   updatedAt: Float
-}
-
-type Food {
-  _id: ID!
-  name: String!
-  category: Category!
-  ingredients: [Ingredient!]!
-  createdAt: Float!
-  updatedAt: Float
-}
-
-type Category {
-  _id: ID!
-  name: String!
-  foods: [Food!]!
-  createdAt: Float!
-  updatedAt: Float
+  recipes: [Recipe!]!
 }
 
 type Query {
@@ -43,7 +51,7 @@ type Query {
 type Mutation {
   createIngredient(data: CreateIngredientData!): Ingredient!
   editIngredient(data: EditIngredientData!): Ingredient!
-  deleteIngredient(_id: String!): Ingredient!
+  deleteIngredient(id: Float!): String!
 }
 
 input CreateIngredientData {
@@ -58,7 +66,7 @@ input CreateIngredientData {
 }
 
 input EditIngredientData {
-  _id: ID!
+  id: ID!
   name: String
   calories: Float
   proteins: Float

@@ -28,8 +28,8 @@ export class IngredientResolver {
     return this.ingredientService.editIngredient(data);
   }
 
-  @Mutation(() => Ingredient)
-  public async deleteIngredient(@Args('_id') _id: string) {
-    return this.ingredientService.deleteIngredient(_id);
+  @Mutation(() => String)
+  public async deleteIngredient(@Args('id') id: number) {
+    return this.ingredientService.deleteIngredient(id);
   }
 }
