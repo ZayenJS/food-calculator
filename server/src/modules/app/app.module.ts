@@ -29,7 +29,11 @@ import { RecipeModule } from '../recipe/recipe.module';
       autoSchemaFile: path.join(process.cwd(), 'src/schema.gql'),
       cors: {
         credentials: true,
-        origin: [process.env.CLIENT_URL, 'https://studio.apollographql.com'],
+        origin: [
+          process.env.CLIENT_URL,
+          'https://studio.apollographql.com',
+          '*',
+        ],
       },
       playground: true,
       context: ({ req, res }: Context) => ({ req, res }),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_calculator/screens/AddIngredient/add_ingredient.dart';
-
-import './screens/Home/home.dart';
+import 'package:food_calculator/screens/Calculate/calculate.dart';
+import 'package:food_calculator/screens/Home/home.dart';
 
 void main() => runApp(const MyApp());
 
@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => Home(title: 'Food Calculator'),
         "/add-ingredient": (context) =>
-            AddIngredient(title: "Ajouter un ingrédient")
+            AddIngredient(title: "Ajouter un ingrédient"),
+        "/calculate": (context) => Calculate(),
       },
     );
   }

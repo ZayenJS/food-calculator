@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:food_calculator/classes/input.dart';
+import 'package:food_calculator/classes/ingredient.dart';
+import 'package:http/http.dart';
 
 import '../../widgets/input_group.dart';
 
-class AddIngredient extends StatelessWidget {
+import '../../classes/input.dart';
+
+class AddIngredient extends StatefulWidget {
   final String title;
 
   AddIngredient({Key? key, required this.title}) : super(key: key);
+
+  @override
+  _AddIngredientState createState() => _AddIngredientState();
+}
+
+class _AddIngredientState extends State<AddIngredient> {
+  String _message = '';
 
   TextEditingController name = TextEditingController();
   TextEditingController calories = TextEditingController();
@@ -17,11 +27,30 @@ class AddIngredient extends StatelessWidget {
   TextEditingController saturated = TextEditingController();
   TextEditingController salt = TextEditingController();
 
+  void _addIngredient() {
+    Ingredient ingredient = Ingredient(
+      name: name.text,
+      calories: calories.text,
+      proteins: proteins.text,
+      carbohydrates: carbohydrates.text,
+      sugars: sugars.text,
+      fats: fats.text,
+      saturated: saturated.text,
+      salt: salt.text,
+    );
+
+    ingredient.save();
+
+    setState(() {
+      _message = "Ingredient bien ajouté !";
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -34,6 +63,13 @@ class AddIngredient extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6.0),
                 child: Image.asset(
                   "assets/images/add-ingredient-banner.jpg",
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  _message,
+                  style: TextStyle(fontSize: 22, color: Colors.deepPurple),
                 ),
               ),
               InputGroup(
@@ -58,7 +94,7 @@ class AddIngredient extends StatelessWidget {
                 width: double.infinity,
                 margin: const EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 0.0),
                 child: ElevatedButton(
-                  onPressed: () => '',
+                  onPressed: _addIngredient,
                   child: const Text(
                     "Valider",
                     textAlign: TextAlign.center,
@@ -73,8 +109,3 @@ class AddIngredient extends StatelessWidget {
     );
   }
 }
-
-// class _AddIngredientState extends State<AddIngredient> {
-
-
-// }

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:food_calculator/classes/input.dart';
-
-import '../../widgets/input_group.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -13,7 +10,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int _counter = 0;
   TextEditingController name = TextEditingController();
   TextEditingController calories = TextEditingController();
   TextEditingController proteins = TextEditingController();
@@ -23,26 +19,78 @@ class _HomeState extends State<Home> {
   TextEditingController saturated = TextEditingController();
   TextEditingController salt = TextEditingController();
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: const Icon(Icons.restaurant),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              padding: EdgeInsets.zero,
+              child: Container(
+                child: Center(
+                  child: Text(
+                    "Food Calculator",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                image: DecorationImage(
+                  image: ExactAssetImage("assets/images/drawer-banner.jpg"),
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.8),
+                    BlendMode.dstATop,
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            ListTile(
+              onTap: () => Navigator.pushNamed(context, "/add-ingredient"),
+              title: Text("Ajouter un ingrédient",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
+            ListTile(
+              onTap: () => Navigator.pushNamed(context, "/calculate"),
+              title: Text("Calculer",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
+          ],
         ),
-        leadingWidth: 40,
-        title: Text(widget.title),
+      ),
+      appBar: AppBar(
+        leadingWidth: 30,
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(right: 6),
+              child: const Icon(Icons.restaurant),
+            ),
+            Text(widget.title),
+          ],
+        ),
         actions: [
+          IconButton(
+            onPressed: () => Navigator.pushNamed(context, "/calculate"),
+            iconSize: 34,
+            icon: Icon(Icons.calculate_rounded),
+          ),
           IconButton(
             onPressed: () => Navigator.pushNamed(context, '/add-ingredient'),
             icon: const Icon(Icons.add),
+            iconSize: 34,
           ),
         ],
       ),
@@ -51,8 +99,8 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const Text(
+            children: const <Widget>[
+              Text(
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia nec dolor in imperdiet. Quisque tristique dignissim tortor, in porta.")
             ],
           ),
