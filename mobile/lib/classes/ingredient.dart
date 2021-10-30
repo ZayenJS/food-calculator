@@ -1,17 +1,18 @@
 import 'dart:convert';
 
+import 'package:food_calculator/constants/url.dart';
 import 'package:http/http.dart' as http;
 
 class Ingredient {
   int? id;
   String name;
-  String calories;
-  String proteins;
-  String carbohydrates;
-  String sugars;
-  String fats;
-  String saturated;
-  String salt;
+  double calories;
+  double proteins;
+  double carbohydrates;
+  double sugars;
+  double fats;
+  double saturated;
+  double salt;
 
   Ingredient({
     this.id,
@@ -27,20 +28,18 @@ class Ingredient {
 
   Map<String, dynamic> toJson() => {
         "name": name,
-        "calories": double.parse(calories),
-        "proteins": double.parse(proteins),
-        "carbohydrates": double.parse(carbohydrates),
-        "sugars": double.parse(sugars),
-        "fats": double.parse(fats),
-        "saturated": double.parse(saturated),
-        "salt": double.parse(salt),
+        "calories": calories,
+        "proteins": proteins,
+        "carbohydrates": carbohydrates,
+        "sugars": sugars,
+        "fats": fats,
+        "saturated": saturated,
+        "salt": salt,
       };
 
-  void save() async {
+  Future<dynamic> save() async {
     try {
-      var url = Uri.parse("http://192.168.1.9:8008/graphql");
-
-      var response = await http.post(url, body: {
+      var response = await http.post(graphQlURL, body: {
         "query": """
               mutation(\$CreateIngredientData: CreateIngredientData!) {
                 createIngredient(data: \$CreateIngredientData) {
@@ -56,12 +55,67 @@ class Ingredient {
                 }
               }
         """,
-        "variables": jsonEncode(
-          {"CreateIngredientData": toJson()},
-        ),
+        "variables": jsonEncode({"CreateIngredientData": toJson()}),
       });
+
+      print(response);
+
+      return this;
     } catch (error) {
       print(error);
     }
+
+    return null;
+  }
+
+  static Future<List<Ingredient>> findByName(String name) async {
+    try {
+      var response = await http.post(graphQlURL, body: {
+        "query": """
+          query FindIngredientsByName(\$name: String!) {
+            findIngredientsByName(name: \$name) {
+              id
+              name
+              calories
+              proteins
+              carbohydrates
+              sugars
+              fats
+              saturated
+              salt
+            }
+          }
+        """,
+        "variables": jsonEncode({"name": name}),
+      });
+
+      var parsedData = jsonDecode(response.body);
+      var data = parsedData['data'];
+
+      if (data != null) {
+        List<Ingredient> ingredients = List<Ingredient>.from(
+          data['findIngredientsByName'].map(
+            (ingredient) => Ingredient(
+              id: int.tryParse(ingredient['id']),
+              name: ingredient['name'],
+              calories: double.parse(ingredient['calories'].toString()),
+              proteins: double.parse(ingredient['proteins'].toString()),
+              carbohydrates:
+                  double.parse(ingredient['carbohydrates'].toString()),
+              sugars: double.parse(ingredient['sugars'].toString()),
+              fats: double.parse(ingredient['fats'].toString()),
+              saturated: double.parse(ingredient['saturated'].toString()),
+              salt: double.parse(ingredient['salt'].toString()),
+            ),
+          ),
+        );
+
+        return ingredients;
+      }
+    } catch (error) {
+      print(error);
+    }
+
+    return [];
   }
 }

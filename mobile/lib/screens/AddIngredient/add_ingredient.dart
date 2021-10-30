@@ -30,13 +30,13 @@ class _AddIngredientState extends State<AddIngredient> {
   void _addIngredient() {
     Ingredient ingredient = Ingredient(
       name: name.text,
-      calories: calories.text,
-      proteins: proteins.text,
-      carbohydrates: carbohydrates.text,
-      sugars: sugars.text,
-      fats: fats.text,
-      saturated: saturated.text,
-      salt: salt.text,
+      calories: double.parse(calories.text),
+      proteins: double.parse(proteins.text),
+      carbohydrates: double.parse(carbohydrates.text),
+      sugars: double.parse(sugars.text),
+      fats: double.parse(fats.text),
+      saturated: double.parse(saturated.text),
+      salt: double.parse(salt.text),
     );
 
     ingredient.save();

@@ -17,6 +17,7 @@ class InputGroup extends StatelessWidget {
           child: TextField(
             decoration: InputDecoration(labelText: field1.text),
             controller: field1.controller,
+            onChanged: field1.onChanged,
           ),
         ),
       )
@@ -31,6 +32,7 @@ class InputGroup extends StatelessWidget {
             child: TextField(
               decoration: InputDecoration(labelText: field2!.text),
               controller: field2!.controller,
+              onChanged: field2?.onChanged,
             ),
           ),
         ),
