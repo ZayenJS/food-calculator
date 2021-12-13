@@ -20,7 +20,7 @@ export class Ingredient extends BaseEntity {
   public id: number;
 
   @Field(() => String, { nullable: false })
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'varchar', length: 110, nullable: false, unique: true })
   public name: string;
 
   @Field(() => Float, { nullable: false })

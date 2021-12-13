@@ -42,6 +42,17 @@ type Ingredient {
   recipes: [Recipe!]!
 }
 
+type Error {
+  field: String
+  type: String
+  message: String!
+}
+
+type IngredientResponse {
+  errors: [Error!]
+  ingredient: Ingredient
+}
+
 type Query {
   hello: String!
   getIngredients: [Ingredient!]!
@@ -49,7 +60,7 @@ type Query {
 }
 
 type Mutation {
-  createIngredient(data: CreateIngredientData!): Ingredient!
+  createIngredient(data: CreateIngredientData!): IngredientResponse!
   editIngredient(data: EditIngredientData!): Ingredient!
   deleteIngredient(id: Float!): String!
 }

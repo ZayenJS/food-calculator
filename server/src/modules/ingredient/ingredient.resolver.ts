@@ -3,6 +3,7 @@ import { Ingredient } from 'src/models/Ingredient';
 import { IngredientService } from './ingredient.service';
 import { CreateIngredientData } from './InputTypes/CreateIngredientData';
 import { EditIngredientData } from './InputTypes/EditIngredientData';
+import { IngredientResponse } from './Responses/IngredientResponse';
 
 @Resolver()
 export class IngredientResolver {
@@ -18,7 +19,7 @@ export class IngredientResolver {
     return this.ingredientService.findIngredientsByName(name);
   }
 
-  @Mutation(() => Ingredient)
+  @Mutation(() => IngredientResponse)
   public async createIngredient(@Args('data') data: CreateIngredientData) {
     return this.ingredientService.createIngredient(data);
   }

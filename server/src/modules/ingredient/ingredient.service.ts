@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { ErrorMEssage, ErrorType } from 'src/constants/Errors';
+import { FormErrorMessage, FormErrorType } from 'src/constants/formErrors';
 import { Ingredient } from 'src/models/Ingredient';
 import { ILike } from 'typeorm';
 import { CreateIngredientData } from './InputTypes/CreateIngredientData';
 import { EditIngredientData } from './InputTypes/EditIngredientData';
+import { IngredientResponse } from './Responses/IngredientResponse';
 
 @Injectable()
 export class IngredientService {
@@ -37,11 +40,25 @@ export class IngredientService {
   }
 
   public async createIngredient(data: CreateIngredientData) {
+    const response: IngredientResponse = { errors: [], ingredient: null };
+
     try {
-      const ingredient = await Ingredient.create(data);
-      return ingredient.save({ reload: true });
+      const ingredient = Ingredient.create(data);
+      response.ingredient = await ingredient.save({ reload: true });
+
+      return response;
     } catch (error) {
-      console.trace(error);
+      if (error.code === '23505') {
+        const column = (error.detail as string).match(/\(([^()]*)\)/)?.[1];
+
+        response.errors.push({
+          type: ErrorType.DUPLICATE,
+          field: column,
+          message: ErrorMEssage.DUPLICATE,
+        });
+      }
+
+      return response;
     }
   }
 
