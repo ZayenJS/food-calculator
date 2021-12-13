@@ -60,7 +60,7 @@ class _HomeState extends State<Home> {
                   )),
             ),
             ListTile(
-              onTap: () => Navigator.pushNamed(context, "/calculate"),
+              onTap: () => Navigator.pushNamed(context, "/search-ingredient"),
               title: Text("Calculer",
                   style: TextStyle(
                     fontSize: 18,
@@ -83,7 +83,7 @@ class _HomeState extends State<Home> {
         ),
         actions: [
           IconButton(
-            onPressed: () => Navigator.pushNamed(context, "/calculate"),
+            onPressed: () => Navigator.pushNamed(context, "/search-ingredient"),
             iconSize: 34,
             icon: Icon(Icons.calculate_rounded),
           ),

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 class Input {
-  String text;
+  String label;
   TextEditingController controller;
   Function(String)? onChanged;
+  String? error;
 
-  Input({required this.text, required this.controller, this.onChanged});
+  Input({
+    required this.label,
+    required this.controller,
+    this.onChanged,
+    this.error,
+  });
 }

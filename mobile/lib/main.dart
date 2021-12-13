@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:food_calculator/screens/AddIngredient/add_ingredient.dart';
-import 'package:food_calculator/screens/Calculate/calculate.dart';
-import 'package:food_calculator/screens/Home/home.dart';
+import 'package:food_calculator/classes/route_generator.dart';
+import 'package:food_calculator/providers/ingredient.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
 
@@ -10,18 +10,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Food Calculator',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+    return ChangeNotifierProvider(
+      create: (context) => IngredientProvider(),
+      child: MaterialApp(
+        title: 'Food Calculator',
+        theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+        ),
+        initialRoute: '/',
+        onGenerateRoute: RouteGenerator.generateRoute,
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => Home(title: 'Food Calculator'),
-        "/add-ingredient": (context) =>
-            AddIngredient(title: "Ajouter un ingrédient"),
-        "/calculate": (context) => Calculate(),
-      },
     );
   }
 }

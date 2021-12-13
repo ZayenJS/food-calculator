@@ -1,7 +1,15 @@
 import 'dart:convert';
 
+import 'package:food_calculator/classes/api_error.dart';
 import 'package:food_calculator/constants/url.dart';
 import 'package:http/http.dart' as http;
+
+class IngredientResponse {
+  Ingredient? ingredient;
+  List<ApiError> errors = [];
+
+  IngredientResponse({this.ingredient, required this.errors});
+}
 
 class Ingredient {
   int? id;
@@ -13,6 +21,8 @@ class Ingredient {
   double fats;
   double saturated;
   double salt;
+
+  double? quantity;
 
   Ingredient({
     this.id,
@@ -26,6 +36,19 @@ class Ingredient {
     required this.salt,
   });
 
+  Ingredient.withQuantity({
+    required this.id,
+    required this.name,
+    required this.calories,
+    required this.proteins,
+    required this.carbohydrates,
+    required this.sugars,
+    required this.fats,
+    required this.saturated,
+    required this.salt,
+    required this.quantity,
+  });
+
   Map<String, dynamic> toJson() => {
         "name": name,
         "calories": calories,
@@ -37,38 +60,92 @@ class Ingredient {
         "salt": salt,
       };
 
-  Future<dynamic> save() async {
+  Future<IngredientResponse> save() async {
     try {
       var response = await http.post(graphQlURL, body: {
         "query": """
               mutation(\$CreateIngredientData: CreateIngredientData!) {
                 createIngredient(data: \$CreateIngredientData) {
-                  id
-                  name
-                  calories
-                  proteins
-                  carbohydrates
-                  sugars
-                  fats
-                  saturated
-                  salt
+                  errors {
+                    field
+                    type
+                    message
+                  }
+                  ingredient {
+                    id
+                    name
+                    calories
+                    proteins
+                    carbohydrates
+                    sugars
+                    fats
+                    saturated
+                    salt
+                  }
                 }
               }
         """,
         "variables": jsonEncode({"CreateIngredientData": toJson()}),
       });
 
-      print(response);
+      var parsedResponse = jsonDecode(response.body);
+      var responseData = parsedResponse['data']['createIngredient'];
 
-      return this;
+      if (responseData['ingredient'] != null) {
+        // var ingredientMap = parsedResponse['data']['createIngredient'];
+        // Ingredient ingredient = Ingredient(
+        //   id: ingredientMap['id'],
+        //   calories: ingredientMap['calories'],
+        //   carbohydrates: ingredientMap['carbohydrates'],
+        //   fats: ingredientMap['fats'],
+        //   name: ingredientMap['name'],
+        //   proteins: ingredientMap['proteins'],
+        //   salt: ingredientMap['salt'],
+        //   saturated: ingredientMap['saturated'],
+        //   sugars: ingredientMap['saturated'],
+        // );
+
+        return IngredientResponse(ingredient: this, errors: []);
+      }
+
+      List<ApiError> errors = List<ApiError>.from(
+        responseData['errors']
+            .map(
+              (error) => ApiError(
+                message: error['message'],
+                field: error['field'],
+                type: error['type'],
+              ),
+            )
+            .toList(),
+      );
+
+      // var ingredientMap = responseData['ingredient'];
+
+      // if (ingredientMap != null) {
+      //   Ingredient ingredient = Ingredient(
+      //     id: ingredientMap['id'],
+      //     calories: ingredientMap['calories'],
+      //     carbohydrates: ingredientMap['carbohydrates'],
+      //     fats: ingredientMap['fats'],
+      //     name: ingredientMap['name'],
+      //     proteins: ingredientMap['proteins'],
+      //     salt: ingredientMap['salt'],
+      //     saturated: ingredientMap['saturated'],
+      //     sugars: ingredientMap['saturated'],
+      //   );
+
+      return IngredientResponse(errors: errors);
+      // }
     } catch (error) {
-      print(error);
-    }
+      print("error: $error");
 
-    return null;
+      return IngredientResponse(ingredient: this, errors: []);
+    }
   }
 
   static Future<List<Ingredient>> findByName(String name) async {
+    // TODO: handle errors
     try {
       var response = await http.post(graphQlURL, body: {
         "query": """
