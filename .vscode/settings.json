@@ -1,0 +1,14 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "192.168.1.49",
+      "port": 5433,
+      "driver": "PostgreSQL",
+      "name": "nas-db",
+      "database": "food-calculator",
+      "username": "food-calculator",
+      "password": "food-calculator"
+    }
+  ]
+}

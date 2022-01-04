@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_calculator/classes/ingredient.dart';
+import 'package:food_calculator/utils/utils.dart';
 
 class IngredientProvider with ChangeNotifier {
   List<Ingredient> _ingredientCalculationList = [];
@@ -31,14 +32,13 @@ class IngredientProvider with ChangeNotifier {
   }
 
   void updateIngredientsCalculationList(Ingredient ingredient) {
-    var newCalculationList = [..._ingredientCalculationList];
-
-    for (var i in newCalculationList) {
+    var newCalculationList = _ingredientCalculationList.map((i) {
       if (i.id == ingredient.id) {
-        i.quantity = ingredient.quantity;
-        continue;
+        i = ingredient;
       }
-    }
+
+      return i;
+    }).toList();
 
     _ingredientCalculationList = newCalculationList;
 

@@ -17,19 +17,19 @@ class Calculate extends StatefulWidget {
 class _CalculateState extends State<Calculate> {
   Map<String, TextEditingController> controllers = {};
 
-  double getTotal(BuildContext context, String column) {
-    List<Ingredient> ingredients =
-        Provider.of<IngredientProvider>(context).ingredientCalculationList;
-    double total = 0;
+  // double getTotal(BuildContext context, String column) {
+  //   List<Ingredient> ingredients =
+  //       Provider.of<IngredientProvider>(context).ingredientCalculationList;
+  //   double total = 0;
 
-    for (Ingredient ingredient in ingredients) {
-      if (column == 'quantity') continue;
+  //   for (Ingredient ingredient in ingredients) {
+  //     if (column == 'quantity') continue;
 
-      total += ingredient.toJson()[column];
-    }
+  //     total += ingredient.toJson()[column];
+  //   }
 
-    return total;
-  }
+  //   return total;
+  // }
 
   void populateControllers(BuildContext context) {
     Map<String, TextEditingController> updatedControllers = {};
@@ -88,7 +88,7 @@ class _IngredientDetails extends StatefulWidget {
 }
 
 class _IngredientDetailsState extends State<_IngredientDetails> {
-  String _inputValue = '100';
+  String? _inputValue;
   bool _isDetailTableVisible = false;
 
   void _toggleDataTable() {
@@ -97,10 +97,22 @@ class _IngredientDetailsState extends State<_IngredientDetails> {
     });
   }
 
+  @override
+  void initState() {
+    _inputValue = widget.ingredient.quantity?.toStringAsFixed(0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void _inputChange(String value, BuildContext context) => setState(() {
         _inputValue = value.toString().isEmpty ? '0' : value;
 
         final Ingredient ingredient = widget.ingredient;
+
         Provider.of<IngredientProvider>(context, listen: false)
             .updateIngredientsCalculationList(
           Ingredient.withQuantity(
@@ -114,7 +126,7 @@ class _IngredientDetailsState extends State<_IngredientDetails> {
             saturated: ingredient.saturated,
             fibers: ingredient.fibers,
             salt: ingredient.salt,
-            quantity: double.parse(_inputValue),
+            quantity: double.parse(_inputValue!),
           ),
         );
       });
@@ -123,8 +135,12 @@ class _IngredientDetailsState extends State<_IngredientDetails> {
   Widget build(BuildContext context) {
     final String ingredientName = widget.ingredient.name[0].toUpperCase() +
         widget.ingredient.name.substring(1);
-    final double _muliplicationFactor = (double.parse(_inputValue) / 100);
+
+    final double _muliplicationFactor =
+        (double.parse(_inputValue ?? "100") / 100);
+
     Map<String, dynamic> jsonIngredient = widget.ingredient.toJson();
+
     List<DataRow> ingredientRow = [];
 
     jsonIngredient.forEach((key, value) {
@@ -139,10 +155,8 @@ class _IngredientDetailsState extends State<_IngredientDetails> {
           DataRow(
             cells: [
               DataCell(Text(key[0].toUpperCase() + key.substring(1))),
+              DataCell(Text("$fixedValue $unit")),
               DataCell(Text("$value $unit")),
-              DataCell(
-                Text("$fixedValue $unit"),
-              ),
             ],
           ),
         );
@@ -154,11 +168,13 @@ class _IngredientDetailsState extends State<_IngredientDetails> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(ingredientName),
+            Flexible(
+              child: Text(ingredientName),
+            ),
             Row(
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width / 2.5,
+                  width: MediaQuery.of(context).size.width / 5.0,
                   child: TextFormField(
                     initialValue: _inputValue,
                     decoration: const InputDecoration(label: Text('Quantité')),
@@ -173,8 +189,14 @@ class _IngredientDetailsState extends State<_IngredientDetails> {
                 ),
                 IconButton(
                   onPressed: _toggleDataTable,
-                  icon: const Icon(
-                    Icons.arrow_drop_down_circle_outlined,
+                  icon: AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    child: Transform.rotate(
+                      angle: _isDetailTableVisible ? 0.0 : 110.0,
+                      child: const Icon(
+                        Icons.arrow_drop_down_circle_outlined,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -182,13 +204,21 @@ class _IngredientDetailsState extends State<_IngredientDetails> {
           ],
         ),
         if (_isDetailTableVisible)
-          DataTable(
-            columns: <DataColumn>[
-              const DataColumn(label: Text('Nom')),
-              const DataColumn(label: Text('100g')),
-              DataColumn(label: Text('${_inputValue}g')),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Text("Details $ingredientName"),
+              ),
+              DataTable(
+                columns: <DataColumn>[
+                  const DataColumn(label: Text('Nom')),
+                  DataColumn(label: Text('${_inputValue}g')),
+                  const DataColumn(label: Text('100g')),
+                ],
+                rows: ingredientRow,
+              ),
             ],
-            rows: ingredientRow,
           ),
       ],
     );
@@ -205,145 +235,162 @@ class _CalculationTotal extends StatelessWidget {
     List<Ingredient> ingredientList =
         Provider.of<IngredientProvider>(context).ingredientCalculationList;
     List<double> quantities =
-        ingredientList.map((i) => i.quantity as double).toList();
-    List<double> calories = ingredientList.map((i) => i.calories).toList();
-    List<double> proteins = ingredientList.map((i) => i.proteins).toList();
-    List<double> carbohydrates =
-        ingredientList.map((i) => i.carbohydrates).toList();
-    List<double> sugars = ingredientList.map((i) => i.sugars).toList();
-    List<double> fats = ingredientList.map((i) => i.fats).toList();
-    List<double> saturated = ingredientList.map((i) => i.saturated).toList();
-    List<double> fibers = ingredientList.map((i) => i.fibers).toList();
-    List<double> salt = ingredientList.map((i) => i.salt).toList();
+        CalculationUtil.getTotalByField(ingredientList, "quantity");
 
-    double total = CalculationUtil.getTotal(quantities);
-    double totalCalories = CalculationUtil.getTotal(calories);
-    double totalProteins = CalculationUtil.getTotal(proteins);
-    double totalCarbohydrates = CalculationUtil.getTotal(carbohydrates);
-    double totalSugars = CalculationUtil.getTotal(sugars);
-    double totalFats = CalculationUtil.getTotal(fats);
-    double totalSaturated = CalculationUtil.getTotal(saturated);
-    double totalFibers = CalculationUtil.getTotal(fibers);
-    double totalSalt = CalculationUtil.getTotal(salt);
+    double totalQuantity = CalculationUtil.getTotal(quantities);
 
-    double divisionFactor = total / 100;
+    double dividerFactor = totalQuantity / 100;
 
-    return DataTable(columns: [
-      const DataColumn(
-        label: Text('Total'),
-      ),
-      DataColumn(
-        label: Text('${total.toStringAsFixed(2)}g'),
-      ),
-      const DataColumn(
-        label: Text('100g'),
-      ),
-    ], rows: [
-      DataRow(
-        cells: [
-          const DataCell(
-            Text('Calories'),
+    CalculationResult totalCalories = CalculationUtil.getTotalAndFor100(
+        ingredientList, "calories", dividerFactor);
+
+    CalculationResult totalProteins = CalculationUtil.getTotalAndFor100(
+        ingredientList, "proteins", dividerFactor);
+
+    CalculationResult totalCarbohydrates = CalculationUtil.getTotalAndFor100(
+        ingredientList, "carbohydrates", dividerFactor);
+
+    CalculationResult totalSugars = CalculationUtil.getTotalAndFor100(
+        ingredientList, "sugars", dividerFactor);
+
+    CalculationResult totalFats = CalculationUtil.getTotalAndFor100(
+        ingredientList, "fats", dividerFactor);
+
+    CalculationResult totalSaturated = CalculationUtil.getTotalAndFor100(
+        ingredientList, "saturated", dividerFactor);
+
+    CalculationResult totalFibers = CalculationUtil.getTotalAndFor100(
+        ingredientList, "fibers", dividerFactor);
+
+    CalculationResult totalSalt = CalculationUtil.getTotalAndFor100(
+        ingredientList, "salt", dividerFactor);
+
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 18.0),
+          child: Text(
+            "Resultat final du calcul",
+            style: TextStyle(fontSize: 20.0),
           ),
-          DataCell(
-            Text('${totalCalories.toStringAsFixed(2)}kcal'),
+        ),
+        DataTable(columns: [
+          const DataColumn(
+            label: Text('Total'),
           ),
-          DataCell(
-            Text('${(totalCalories / divisionFactor).toStringAsFixed(2)}kcal'),
+          DataColumn(
+            label: Text('${totalQuantity.toStringAsFixed(2)}g'),
           ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          const DataCell(
-            Text('Protéines'),
+          const DataColumn(
+            label: Text('100.00g'),
           ),
-          DataCell(
-            Text('${totalProteins.toStringAsFixed(2)}g'),
+        ], rows: [
+          DataRow(
+            cells: [
+              const DataCell(
+                Text('Calories'),
+              ),
+              DataCell(
+                Text('${totalCalories.total.toStringAsFixed(2)}kcal'),
+              ),
+              DataCell(
+                Text('${totalCalories.for100.toStringAsFixed(2)}kcal'),
+              ),
+            ],
           ),
-          DataCell(
-            Text('${(totalProteins / divisionFactor).toStringAsFixed(2)}g'),
+          DataRow(
+            cells: [
+              const DataCell(
+                Text('Protéines'),
+              ),
+              DataCell(
+                Text('${totalProteins.total.toStringAsFixed(2)}g'),
+              ),
+              DataCell(
+                Text('${totalProteins.for100.toStringAsFixed(2)}g'),
+              ),
+            ],
           ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          const DataCell(
-            Text('Glucides'),
+          DataRow(
+            cells: [
+              const DataCell(
+                Text('Glucides'),
+              ),
+              DataCell(
+                Text('${totalCarbohydrates.total.toStringAsFixed(2)}g'),
+              ),
+              DataCell(
+                Text('${totalCarbohydrates.for100.toStringAsFixed(2)}g'),
+              ),
+            ],
           ),
-          DataCell(
-            Text('${totalCarbohydrates.toStringAsFixed(2)}g'),
+          DataRow(
+            cells: [
+              const DataCell(
+                Text('Sucres'),
+              ),
+              DataCell(
+                Text('${totalSugars.total.toStringAsFixed(2)}g'),
+              ),
+              DataCell(
+                Text('${totalSugars.for100.toStringAsFixed(2)}g'),
+              ),
+            ],
           ),
-          DataCell(
-            Text(
-                '${(totalCarbohydrates / divisionFactor).toStringAsFixed(2)}g'),
+          DataRow(
+            cells: [
+              const DataCell(
+                Text('Lipides'),
+              ),
+              DataCell(
+                Text('${totalFats.total.toStringAsFixed(2)}g'),
+              ),
+              DataCell(
+                Text('${totalFats.for100.toStringAsFixed(2)}g'),
+              ),
+            ],
           ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          const DataCell(
-            Text('Sucres'),
+          DataRow(
+            cells: [
+              const DataCell(
+                Text('Saturés'),
+              ),
+              DataCell(
+                Text('${totalSaturated.total.toStringAsFixed(2)}g'),
+              ),
+              DataCell(
+                Text('${totalSaturated.for100.toStringAsFixed(2)}g'),
+              ),
+            ],
           ),
-          DataCell(
-            Text('${totalSugars.toStringAsFixed(2)}g'),
+          DataRow(
+            cells: [
+              const DataCell(
+                Text('Fibres'),
+              ),
+              DataCell(
+                Text('${totalFibers.total.toStringAsFixed(2)}g'),
+              ),
+              DataCell(
+                Text('${totalFibers.for100.toStringAsFixed(2)}g'),
+              ),
+            ],
           ),
-          DataCell(
-            Text('${(totalSugars / divisionFactor).toStringAsFixed(2)}g'),
+          DataRow(
+            cells: [
+              const DataCell(
+                Text('Sel'),
+              ),
+              DataCell(
+                Text('${totalSalt.total.toStringAsFixed(2)}g'),
+              ),
+              DataCell(
+                Text('${totalSalt.for100.toStringAsFixed(2)}g'),
+              ),
+            ],
           ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          const DataCell(
-            Text('Lipides'),
-          ),
-          DataCell(
-            Text('${totalFats.toStringAsFixed(2)}g'),
-          ),
-          DataCell(
-            Text('${(totalFats / divisionFactor).toStringAsFixed(2)}g'),
-          ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          const DataCell(
-            Text('Saturés'),
-          ),
-          DataCell(
-            Text('${totalSaturated.toStringAsFixed(2)}g'),
-          ),
-          DataCell(
-            Text('${(totalSaturated / divisionFactor).toStringAsFixed(2)}g'),
-          ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          const DataCell(
-            Text('Fibres'),
-          ),
-          DataCell(
-            Text('${totalFibers.toStringAsFixed(2)}g'),
-          ),
-          DataCell(
-            Text('${(totalFibers / divisionFactor).toStringAsFixed(2)}g'),
-          ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          const DataCell(
-            Text('Sel'),
-          ),
-          DataCell(
-            Text('${totalSalt.toStringAsFixed(2)}g'),
-          ),
-          DataCell(
-            Text('${(totalSalt / divisionFactor).toStringAsFixed(2)}g'),
-          ),
-        ],
-      ),
-    ]);
+        ]),
+      ],
+    );
   }
 }

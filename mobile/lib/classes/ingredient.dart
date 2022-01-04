@@ -64,6 +64,19 @@ class Ingredient {
         "salt": salt,
       };
 
+  Map<String, dynamic> toJsonWithQuantity() => {
+        "name": name,
+        "calories": calories,
+        "proteins": proteins,
+        "carbohydrates": carbohydrates,
+        "sugars": sugars,
+        "fats": fats,
+        "saturated": saturated,
+        "fibers": fibers,
+        "salt": salt,
+        "quantity": quantity,
+      };
+
   Future<IngredientResponse> save() async {
     try {
       var response = await http.post(graphQlURL, body: {
