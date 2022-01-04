@@ -20,6 +20,7 @@ class Ingredient {
   double sugars;
   double fats;
   double saturated;
+  double fibers;
   double salt;
 
   double? quantity;
@@ -33,6 +34,7 @@ class Ingredient {
     required this.sugars,
     required this.fats,
     required this.saturated,
+    required this.fibers,
     required this.salt,
   });
 
@@ -45,6 +47,7 @@ class Ingredient {
     required this.sugars,
     required this.fats,
     required this.saturated,
+    required this.fibers,
     required this.salt,
     required this.quantity,
   });
@@ -57,6 +60,7 @@ class Ingredient {
         "sugars": sugars,
         "fats": fats,
         "saturated": saturated,
+        "fibers": fibers,
         "salt": salt,
       };
 
@@ -80,6 +84,7 @@ class Ingredient {
                     sugars
                     fats
                     saturated
+                    fibers
                     salt
                   }
                 }
@@ -92,19 +97,6 @@ class Ingredient {
       var responseData = parsedResponse['data']['createIngredient'];
 
       if (responseData['ingredient'] != null) {
-        // var ingredientMap = parsedResponse['data']['createIngredient'];
-        // Ingredient ingredient = Ingredient(
-        //   id: ingredientMap['id'],
-        //   calories: ingredientMap['calories'],
-        //   carbohydrates: ingredientMap['carbohydrates'],
-        //   fats: ingredientMap['fats'],
-        //   name: ingredientMap['name'],
-        //   proteins: ingredientMap['proteins'],
-        //   salt: ingredientMap['salt'],
-        //   saturated: ingredientMap['saturated'],
-        //   sugars: ingredientMap['saturated'],
-        // );
-
         return IngredientResponse(ingredient: this, errors: []);
       }
 
@@ -120,25 +112,9 @@ class Ingredient {
             .toList(),
       );
 
-      // var ingredientMap = responseData['ingredient'];
-
-      // if (ingredientMap != null) {
-      //   Ingredient ingredient = Ingredient(
-      //     id: ingredientMap['id'],
-      //     calories: ingredientMap['calories'],
-      //     carbohydrates: ingredientMap['carbohydrates'],
-      //     fats: ingredientMap['fats'],
-      //     name: ingredientMap['name'],
-      //     proteins: ingredientMap['proteins'],
-      //     salt: ingredientMap['salt'],
-      //     saturated: ingredientMap['saturated'],
-      //     sugars: ingredientMap['saturated'],
-      //   );
-
       return IngredientResponse(errors: errors);
-      // }
     } catch (error) {
-      print("error: $error");
+      print("ingredient save error: $error");
 
       return IngredientResponse(ingredient: this, errors: []);
     }
@@ -159,6 +135,7 @@ class Ingredient {
               sugars
               fats
               saturated
+              fibers
               salt
             }
           }
@@ -182,6 +159,7 @@ class Ingredient {
               sugars: double.parse(ingredient['sugars'].toString()),
               fats: double.parse(ingredient['fats'].toString()),
               saturated: double.parse(ingredient['saturated'].toString()),
+              fibers: double.parse(ingredient['fibers'].toString()),
               salt: double.parse(ingredient['salt'].toString()),
             ),
           ),

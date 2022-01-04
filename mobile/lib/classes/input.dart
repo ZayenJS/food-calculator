@@ -4,12 +4,12 @@ class Input {
   String label;
   TextEditingController controller;
   Function(String)? onChanged;
-  String? error;
+  TextInputType keyboardType;
 
   Input({
     required this.label,
     required this.controller,
+    required this.keyboardType,
     this.onChanged,
-    this.error,
   });
 }

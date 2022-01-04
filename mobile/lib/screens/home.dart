@@ -27,22 +27,21 @@ class _HomeState extends State<Home> {
           children: [
             DrawerHeader(
               padding: EdgeInsets.zero,
-              child: Container(
-                child: Center(
-                  child: Text(
-                    "Food Calculator",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
+              child: const Center(
+                child: Text(
+                  "Food Calculator",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
               decoration: BoxDecoration(
                 color: Colors.black,
                 image: DecorationImage(
-                  image: ExactAssetImage("assets/images/drawer-banner.jpg"),
+                  image:
+                      const ExactAssetImage("assets/images/drawer-banner.jpg"),
                   colorFilter: ColorFilter.mode(
                     Colors.black.withOpacity(0.8),
                     BlendMode.dstATop,
@@ -53,7 +52,7 @@ class _HomeState extends State<Home> {
             ),
             ListTile(
               onTap: () => Navigator.pushNamed(context, "/add-ingredient"),
-              title: Text("Ajouter un ingrédient",
+              title: const Text("Ajouter un ingrédient",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -61,7 +60,7 @@ class _HomeState extends State<Home> {
             ),
             ListTile(
               onTap: () => Navigator.pushNamed(context, "/search-ingredient"),
-              title: Text("Calculer",
+              title: const Text("Calculer",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -85,7 +84,7 @@ class _HomeState extends State<Home> {
           IconButton(
             onPressed: () => Navigator.pushNamed(context, "/search-ingredient"),
             iconSize: 34,
-            icon: Icon(Icons.calculate_rounded),
+            icon: const Icon(Icons.calculate_rounded),
           ),
           IconButton(
             onPressed: () => Navigator.pushNamed(context, '/add-ingredient'),

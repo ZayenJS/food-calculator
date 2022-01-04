@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:food_calculator/classes/decimal_text_input_formatter.dart';
 
 import '../classes/input.dart';
 
@@ -6,24 +8,8 @@ class InputGroup extends StatelessWidget {
   final Input field1;
   final Input? field2;
 
-  InputGroup({required this.field1, this.field2});
-
-  Padding getErrorMessage(Input? field) {
-    if (field != null) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Text(
-          field.error ?? '',
-          style: TextStyle(
-              color: field.error != '' ? Colors.red : Colors.transparent),
-        ),
-      );
-    }
-
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 6),
-    );
-  }
+  const InputGroup({Key? key, required this.field1, this.field2})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +19,21 @@ class InputGroup extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
-              TextField(
+              TextFormField(
+                keyboardType: field1.keyboardType,
                 decoration: InputDecoration(labelText: field1.label),
                 controller: field1.controller,
                 onChanged: field1.onChanged,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Ce champs est obligatoire';
+                  }
+                },
+                inputFormatters: [
+                  if (field1.keyboardType == TextInputType.number)
+                    DecimalTextInputFormatter()
+                ],
               ),
-              getErrorMessage(field1)
             ],
           ),
         ),
@@ -46,28 +41,32 @@ class InputGroup extends StatelessWidget {
     ];
 
     if (field2?.label != null) {
-      rowContent.add(
-        Expanded(
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Column(
-              children: [
-                TextField(
-                  decoration: InputDecoration(labelText: field2!.label),
-                  controller: field2!.controller,
-                  onChanged: field2?.onChanged,
-                ),
-                getErrorMessage(field2)
-              ],
-            ),
+      rowContent.add(Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children: [
+              TextFormField(
+                keyboardType: field2!.keyboardType,
+                decoration: InputDecoration(labelText: field2!.label),
+                controller: field2!.controller,
+                onChanged: field2!.onChanged,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Ce champs est obligatoire';
+                  }
+                },
+                inputFormatters: [
+                  if (field2!.keyboardType == TextInputType.number)
+                    DecimalTextInputFormatter()
+                ],
+              ),
+            ],
           ),
         ),
-      );
+      ));
     }
 
-    return Row(
-      children: rowContent,
-    );
+    return Row(children: rowContent);
   }
 }

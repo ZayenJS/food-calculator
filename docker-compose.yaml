@@ -27,16 +27,18 @@ services:
       - ./server:/app
     restart: unless-stopped
     depends_on:
-      - pg
+      - db
 
-  pg:
+  db:
     image: postgres
     container_name: fc-db
     environment:
-      POSTGRES_PASSWORD: food-calculator
-      POSTGRES_USER: food-calculator
+      MYSQL_PASSWORD: food-calculator
+      MYSQL_USER: food-calculator
+    ports:
+      - 5433:5432
     volumes:
-      - fc-data:/var/liv/postgresql/data
+      - fc-data:/var/lib/postgres/data
     restart: unless-stopped
 
   typeorm:

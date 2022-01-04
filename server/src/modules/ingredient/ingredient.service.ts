@@ -74,12 +74,12 @@ export class IngredientService {
   public async deleteIngredient(id: number) {
     try {
       const ingredient = await Ingredient.findOne(id);
-      let message = "La ressource n'existe déjà plus.";
       if (ingredient) {
         await ingredient.remove();
-        message = 'ok';
+        return 'ok';
       }
-      return message;
+
+      return "La ressource n'existe déjà plus.";
     } catch (error) {
       console.trace(error);
     }

@@ -49,6 +49,10 @@ export class Ingredient extends BaseEntity {
 
   @Field(() => Float, { nullable: false })
   @Column({ type: 'double precision', nullable: false })
+  public fibers: number;
+
+  @Field(() => Float, { nullable: false })
+  @Column({ type: 'double precision', nullable: false })
   public salt: number;
 
   @Field(() => Number)

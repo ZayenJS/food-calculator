@@ -15,8 +15,6 @@ class RouteGenerator {
       );
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final args = settings.arguments;
-
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(
@@ -31,15 +29,10 @@ class RouteGenerator {
           builder: (_) => const SelectIngredient(),
         );
       case "/calculate":
-        if (args is Set<Ingredient>) {
-          return MaterialPageRoute(
-            builder: (_) => Calculate(
-              ingredients: args,
-            ),
-          );
-        }
+        return MaterialPageRoute(
+          builder: (_) => Calculate(),
+        );
 
-        return _errorRoute();
       default:
         return _errorRoute();
     }

@@ -36,6 +36,7 @@ type Ingredient {
   sugars: Float!
   fats: Float!
   saturated: Float!
+  fibers: Float!
   salt: Float!
   createdAt: Float!
   updatedAt: Float
@@ -73,6 +74,7 @@ input CreateIngredientData {
   sugars: Float!
   fats: Float!
   saturated: Float!
+  fibers: Float!
   salt: Float!
 }
 

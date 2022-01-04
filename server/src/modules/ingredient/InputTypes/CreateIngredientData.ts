@@ -24,5 +24,8 @@ export class CreateIngredientData {
   public saturated: number;
 
   @Field(() => Float, { nullable: false })
+  public fibers: number;
+
+  @Field(() => Float, { nullable: false })
   public salt: number;
 }

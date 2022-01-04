@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_calculator/classes/ingredient.dart';
 import 'package:food_calculator/providers/ingredient.dart';
+import 'package:food_calculator/utils/calculation_util.dart';
 import 'package:provider/provider.dart';
 
 class Calculate extends StatefulWidget {
-  Set<Ingredient> ingredients;
-
-  Calculate({Key? key, required this.ingredients}) : super(key: key);
+  const Calculate({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _CalculateState createState() => _CalculateState();
@@ -16,10 +17,12 @@ class Calculate extends StatefulWidget {
 class _CalculateState extends State<Calculate> {
   Map<String, TextEditingController> controllers = {};
 
-  double getTotal(String column) {
+  double getTotal(BuildContext context, String column) {
+    List<Ingredient> ingredients =
+        Provider.of<IngredientProvider>(context).ingredientCalculationList;
     double total = 0;
 
-    for (Ingredient ingredient in widget.ingredients) {
+    for (Ingredient ingredient in ingredients) {
       if (column == 'quantity') continue;
 
       total += ingredient.toJson()[column];
@@ -28,10 +31,12 @@ class _CalculateState extends State<Calculate> {
     return total;
   }
 
-  void populateControllers() {
+  void populateControllers(BuildContext context) {
     Map<String, TextEditingController> updatedControllers = {};
+    List<Ingredient> ingredients =
+        Provider.of<IngredientProvider>(context).ingredientCalculationList;
 
-    for (Ingredient ingredient in widget.ingredients) {
+    for (Ingredient ingredient in ingredients) {
       updatedControllers[ingredient.name] = TextEditingController();
     }
 
@@ -43,7 +48,7 @@ class _CalculateState extends State<Calculate> {
   @override
   Widget build(BuildContext context) {
     if (controllers.isEmpty) {
-      populateControllers();
+      populateControllers(context);
     }
 
     return Scaffold(
@@ -107,6 +112,7 @@ class _IngredientDetailsState extends State<_IngredientDetails> {
             sugars: ingredient.sugars,
             fats: ingredient.fats,
             saturated: ingredient.saturated,
+            fibers: ingredient.fibers,
             salt: ingredient.salt,
             quantity: double.parse(_inputValue),
           ),
@@ -198,113 +204,143 @@ class _CalculationTotal extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Ingredient> ingredientList =
         Provider.of<IngredientProvider>(context).ingredientCalculationList;
-    List<double?> quantities = ingredientList.map((i) => i.quantity).toList();
+    List<double> quantities =
+        ingredientList.map((i) => i.quantity as double).toList();
+    List<double> calories = ingredientList.map((i) => i.calories).toList();
+    List<double> proteins = ingredientList.map((i) => i.proteins).toList();
+    List<double> carbohydrates =
+        ingredientList.map((i) => i.carbohydrates).toList();
+    List<double> sugars = ingredientList.map((i) => i.sugars).toList();
+    List<double> fats = ingredientList.map((i) => i.fats).toList();
+    List<double> saturated = ingredientList.map((i) => i.saturated).toList();
+    List<double> fibers = ingredientList.map((i) => i.fibers).toList();
+    List<double> salt = ingredientList.map((i) => i.salt).toList();
 
-    print('quantities: $quantities');
+    double total = CalculationUtil.getTotal(quantities);
+    double totalCalories = CalculationUtil.getTotal(calories);
+    double totalProteins = CalculationUtil.getTotal(proteins);
+    double totalCarbohydrates = CalculationUtil.getTotal(carbohydrates);
+    double totalSugars = CalculationUtil.getTotal(sugars);
+    double totalFats = CalculationUtil.getTotal(fats);
+    double totalSaturated = CalculationUtil.getTotal(saturated);
+    double totalFibers = CalculationUtil.getTotal(fibers);
+    double totalSalt = CalculationUtil.getTotal(salt);
 
-    double? total = quantities.isEmpty
-        ? 0.0
-        : quantities.reduce((value, element) => value! + element!);
+    double divisionFactor = total / 100;
 
     return DataTable(columns: [
       const DataColumn(
         label: Text('Total'),
       ),
       DataColumn(
-        label: Text('${total?.toStringAsFixed(2)}g'),
+        label: Text('${total.toStringAsFixed(2)}g'),
       ),
       const DataColumn(
         label: Text('100g'),
       ),
-    ], rows: const [
+    ], rows: [
       DataRow(
         cells: [
-          DataCell(
+          const DataCell(
             Text('Calories'),
           ),
           DataCell(
-            Text('computed total'),
+            Text('${totalCalories.toStringAsFixed(2)}kcal'),
           ),
           DataCell(
-            Text(''),
+            Text('${(totalCalories / divisionFactor).toStringAsFixed(2)}kcal'),
           ),
         ],
       ),
       DataRow(
         cells: [
-          DataCell(
+          const DataCell(
             Text('Protéines'),
           ),
           DataCell(
-            Text('computed total'),
+            Text('${totalProteins.toStringAsFixed(2)}g'),
           ),
           DataCell(
-            Text(''),
+            Text('${(totalProteins / divisionFactor).toStringAsFixed(2)}g'),
           ),
         ],
       ),
       DataRow(
         cells: [
-          DataCell(
+          const DataCell(
             Text('Glucides'),
           ),
           DataCell(
-            Text('computed total'),
+            Text('${totalCarbohydrates.toStringAsFixed(2)}g'),
           ),
           DataCell(
-            Text(''),
+            Text(
+                '${(totalCarbohydrates / divisionFactor).toStringAsFixed(2)}g'),
           ),
         ],
       ),
       DataRow(
         cells: [
-          DataCell(
+          const DataCell(
             Text('Sucres'),
           ),
           DataCell(
-            Text('computed total'),
+            Text('${totalSugars.toStringAsFixed(2)}g'),
           ),
           DataCell(
-            Text(''),
+            Text('${(totalSugars / divisionFactor).toStringAsFixed(2)}g'),
           ),
         ],
       ),
       DataRow(
         cells: [
-          DataCell(
+          const DataCell(
             Text('Lipides'),
           ),
           DataCell(
-            Text('computed total'),
+            Text('${totalFats.toStringAsFixed(2)}g'),
           ),
           DataCell(
-            Text(''),
-          ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          DataCell(
-            Text('Sucres'),
-          ),
-          DataCell(
-            Text('computed total'),
-          ),
-          DataCell(
-            Text(''),
+            Text('${(totalFats / divisionFactor).toStringAsFixed(2)}g'),
           ),
         ],
       ),
       DataRow(
         cells: [
+          const DataCell(
+            Text('Saturés'),
+          ),
           DataCell(
+            Text('${totalSaturated.toStringAsFixed(2)}g'),
+          ),
+          DataCell(
+            Text('${(totalSaturated / divisionFactor).toStringAsFixed(2)}g'),
+          ),
+        ],
+      ),
+      DataRow(
+        cells: [
+          const DataCell(
+            Text('Fibres'),
+          ),
+          DataCell(
+            Text('${totalFibers.toStringAsFixed(2)}g'),
+          ),
+          DataCell(
+            Text('${(totalFibers / divisionFactor).toStringAsFixed(2)}g'),
+          ),
+        ],
+      ),
+      DataRow(
+        cells: [
+          const DataCell(
             Text('Sel'),
           ),
           DataCell(
-            Text('computed total'),
+            Text('${totalSalt.toStringAsFixed(2)}g'),
           ),
           DataCell(
-            Text(''),
+            Text('${(totalSalt / divisionFactor).toStringAsFixed(2)}g'),
           ),
         ],
       ),

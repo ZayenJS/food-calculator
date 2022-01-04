@@ -7,17 +7,26 @@ class IngredientProvider with ChangeNotifier {
   List<Ingredient> get ingredientCalculationList => _ingredientCalculationList;
 
   void addIngredient(Ingredient ingredient) {
-    _ingredientCalculationList.add(Ingredient.withQuantity(
-        id: ingredient.id,
-        name: ingredient.name,
-        calories: ingredient.calories,
-        proteins: ingredient.proteins,
-        carbohydrates: ingredient.carbohydrates,
-        sugars: ingredient.sugars,
-        fats: ingredient.fats,
-        saturated: ingredient.saturated,
-        salt: ingredient.salt,
-        quantity: 100.0));
+    _ingredientCalculationList.add(
+      Ingredient.withQuantity(
+          id: ingredient.id,
+          name: ingredient.name,
+          calories: ingredient.calories,
+          proteins: ingredient.proteins,
+          carbohydrates: ingredient.carbohydrates,
+          sugars: ingredient.sugars,
+          fats: ingredient.fats,
+          saturated: ingredient.saturated,
+          fibers: ingredient.fibers,
+          salt: ingredient.salt,
+          quantity: 100.0),
+    );
+    notifyListeners();
+  }
+
+  void removeIngredient(int ingredientId) {
+    _ingredientCalculationList
+        .removeWhere((element) => element.id == ingredientId);
     notifyListeners();
   }
 

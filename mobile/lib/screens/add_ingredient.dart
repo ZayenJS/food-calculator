@@ -1,98 +1,71 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:food_calculator/classes/ingredient.dart';
-import 'package:http/http.dart';
 
-import '../widgets/input_group.dart';
-
-import '../classes/input.dart';
+import 'package:food_calculator/classes/classes.dart';
+import 'package:food_calculator/widgets/widgets.dart';
 
 class AddIngredient extends StatefulWidget {
   final String title;
 
-  AddIngredient({Key? key, required this.title}) : super(key: key);
+  const AddIngredient({Key? key, required this.title}) : super(key: key);
 
   @override
   _AddIngredientState createState() => _AddIngredientState();
 }
 
 class _AddIngredientState extends State<AddIngredient> {
-  String _message = '';
-  bool _hasError = false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final int _snackbarDuration = 2;
 
   Input name = Input(
     label: "Nom",
     controller: TextEditingController(),
-    error: '',
+    keyboardType: TextInputType.text,
   );
   Input calories = Input(
     label: "Calories",
     controller: TextEditingController(),
-    error: '',
+    keyboardType: TextInputType.number,
   );
   Input proteins = Input(
     label: "Protéines",
     controller: TextEditingController(),
-    error: '',
+    keyboardType: TextInputType.number,
   );
   Input carbohydrates = Input(
     label: 'Glucides',
     controller: TextEditingController(),
-    error: '',
+    keyboardType: TextInputType.number,
   );
   Input sugars = Input(
     label: 'Sucres',
     controller: TextEditingController(),
-    error: '',
+    keyboardType: TextInputType.number,
   );
   Input fats = Input(
     label: "Lipides",
     controller: TextEditingController(),
-    error: '',
+    keyboardType: TextInputType.number,
   );
   Input saturated = Input(
     label: 'Saturés',
     controller: TextEditingController(),
-    error: '',
+    keyboardType: TextInputType.number,
+  );
+  Input fibers = Input(
+    label: 'Fibres',
+    controller: TextEditingController(),
+    keyboardType: TextInputType.number,
   );
   Input salt = Input(
     label: "Sel",
     controller: TextEditingController(),
-    error: '',
+    keyboardType: TextInputType.number,
   );
 
-  void _addIngredient(BuildContext context) async {
+  Future<Map<String, dynamic>> _addIngredient(BuildContext context) async {
     FocusScope.of(context).unfocus();
-
-    List<Input> inputs = [
-      name,
-      calories,
-      proteins,
-      carbohydrates,
-      sugars,
-      fats,
-      saturated,
-      salt
-    ];
-
-    bool hasError = false;
-
-    for (Input input in inputs) {
-      if (input.controller.text == '') {
-        input.error = "Champs requis";
-        hasError = true;
-        continue;
-      }
-
-      input.error = "";
-    }
-
-    if (hasError) {
-      return setState(() {
-        _hasError = true;
-      });
-    }
+    Map<String, dynamic> result = {'message': '', 'hasError': false};
 
     try {
       Ingredient ingredient = Ingredient(
@@ -103,58 +76,33 @@ class _AddIngredientState extends State<AddIngredient> {
         sugars: double.parse(sugars.controller.text.trim()),
         fats: double.parse(fats.controller.text.trim()),
         saturated: double.parse(saturated.controller.text.trim()),
+        fibers: double.parse(fibers.controller.text.trim()),
         salt: double.parse(salt.controller.text.trim()),
       );
 
-      dynamic response = await ingredient.save();
+      IngredientResponse response = await ingredient.save();
 
       if (response.errors.isEmpty) {
-        setState(() {
-          _message = "Ingredient bien ajouté !";
-          _hasError = false;
-          _resetInputs();
-          Timer(
-            const Duration(seconds: 2),
-            () => Navigator.pushNamed(context, '/'),
-          );
-        });
-        return;
+        setState(
+          () {
+            _resetInputs();
+            Timer(
+              Duration(seconds: _snackbarDuration),
+              () => Navigator.pushNamed(context, '/'),
+            );
+          },
+        );
+
+        result = {'message': 'Ingrédient ajouté!', 'hasError': false};
       }
 
-      setState(() {
-        _message = "Une erreur est survenue";
-        _hasError = true;
-      });
-    } on FormatException catch (error) {
-      print(error);
-
-      List<Input> inputs = [
-        calories,
-        proteins,
-        carbohydrates,
-        sugars,
-        fats,
-        saturated,
-        salt
-      ];
-
-      // TODO: error handling
-      switch (error.message) {
-        case "Invalid double":
-          inputs.forEach((element) => element.error = '');
-
-          Input errorInput = inputs
-              .where((element) => element.controller.text == error.source)
-              .first;
-          errorInput.error = "Valeur incorrecte";
-          break;
-        default:
-          break;
-      }
-      setState(() {
-        _message = "Une erreur est survenue";
-        _hasError = true;
-      });
+      setState(() {});
+      return result;
+    } catch (error) {
+      print("error: $error");
+      setState(() {});
+      result = {'message': 'Un des champs est erroné.', 'hasError': true};
+      return result;
     }
   }
 
@@ -178,57 +126,75 @@ class _AddIngredientState extends State<AddIngredient> {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6.0),
-                child: Image.asset(
-                  "assets/images/add-ingredient-banner.jpg",
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6.0),
+                  child: Image.asset("assets/images/add-ingredient-banner.jpg"),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Text(
-                  _message,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: _hasError ? Colors.red : Colors.deepPurple,
+                InputGroup(
+                  field1: name,
+                ),
+                InputGroup(
+                  field1: proteins,
+                  field2: calories,
+                ),
+                InputGroup(
+                  field1: carbohydrates,
+                  field2: sugars,
+                ),
+                InputGroup(
+                  field1: fats,
+                  field2: saturated,
+                ),
+                InputGroup(
+                  field1: fibers,
+                  field2: salt,
+                ),
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 0.0),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        Map<String, dynamic> result =
+                            await _addIngredient(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: Duration(seconds: _snackbarDuration),
+                            dismissDirection: DismissDirection.startToEnd,
+                            padding: const EdgeInsets.symmetric(vertical: 26.0),
+                            content: Center(
+                              heightFactor: 0.5,
+                              child: Text(
+                                result['message'],
+                                style: const TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ),
+                            backgroundColor: result['hasError']
+                                ? Theme.of(context).errorColor
+                                : Theme.of(context)
+                                    .snackBarTheme
+                                    .backgroundColor,
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text(
+                      "Valider",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18),
+                    ),
                   ),
                 ),
-              ),
-              InputGroup(
-                field1: name,
-              ),
-              InputGroup(
-                field1: proteins,
-                field2: calories,
-              ),
-              InputGroup(
-                field1: carbohydrates,
-                field2: sugars,
-              ),
-              InputGroup(
-                field1: fats,
-                field2: saturated,
-              ),
-              InputGroup(
-                field1: salt,
-              ),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 0.0),
-                child: ElevatedButton(
-                  onPressed: () => _addIngredient(context),
-                  child: const Text(
-                    "Valider",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

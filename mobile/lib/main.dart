@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
         title: 'Food Calculator',
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,
+          snackBarTheme: SnackBarThemeData(backgroundColor: Colors.deepPurple),
         ),
         initialRoute: '/',
         onGenerateRoute: RouteGenerator.generateRoute,
